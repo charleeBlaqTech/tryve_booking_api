@@ -1,0 +1,20 @@
+  
+  
+    <script>
+        function toggleMenu() {
+            let menu = document.getElementById('menu');
+            menu.classList.toggle('active');
+        }
+        function closeMenu() {
+            //let menu = document.querySelectorAll('menu-links');
+            let menu = document.getElementById('menu');
+            menu.classList.remove('active');
+        }
+
+        document.querySelectorAll('.date').forEach((date)=>{
+            date.textContent = new Date(date.textContent).toLocaleDateString()
+        })
+    </script>
+    <script src="/js/script.js"></script>
+</body>
+</html>

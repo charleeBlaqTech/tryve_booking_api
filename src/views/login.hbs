@@ -1,0 +1,33 @@
+<section>
+     <!-- Login Screen -->
+    <div class="login-container">
+        
+        <div class="login-card">
+            <h2>Welcome Back to WellsFago</h2>
+
+            {{!-- error message --}}
+            {{#if error}}
+                <p class="error-message">{{error}}</p>
+            {{/if}}
+            {{!-- success message --}}
+            {{#if message}}
+                <p class="success-message">{{message}}</p>
+            {{/if}}
+            
+
+            <!-- Login Form -->
+            <form action="/auth/login/" method="POST">
+                <input type="text" name="user_name" class="login-input" placeholder="Username" required>
+                <input type="password" name="password" class="login-input" placeholder="Password" required>
+
+                <!-- Submit Button -->
+                <button type="submit" class="login-button">Log In</button>
+            </form>
+
+            {{!-- <!-- Footer Section -->
+            <div class="login-footer">
+                <p>Don't have an account? <a href="/register/signup/">Sign up here</a></p>
+            </div> --}}
+        </div>
+    </div>
+</section>

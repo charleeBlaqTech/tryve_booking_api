@@ -1,0 +1,253 @@
+{{!-- <section class="bg-red-600 font-sans text-gray-900">
+    <!-- Sidebar -->
+    <div class="flex h-screen">
+        <div class="w-64 bg-blue-800 text-white p-6">
+            <h2 class="text-2xl font-bold mb-6 text-">Wells Fargo</h2>
+            <nav>
+                <ul class="flex items-center justify-between">
+                    <li><a href="#" class="block py-2 px-4 hover:bg-blue-700 rounded-md">Dashboard</a></li>
+                    <li><a href="#balance" class="block py-2 px-4 hover:bg-blue-700 rounded-md">Balance</a></li>
+                    <li><a href="#history" class="block py-2 px-4 hover:bg-blue-700 rounded-md">History</a></li>
+                    <li><a href="#transactions" class="block py-2 px-4 hover:bg-blue-700 rounded-md">Transactions</a>
+                    </li>
+                    <li><a href="#" class="block py-2 px-4 hover:bg-blue-700 rounded-md">Settings</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 p-6 overflow-y-auto">
+
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-semibold">Welcome back, John Doe!</h1>
+                <button class="bg-blue-800 text-white py-2 px-4 rounded-lg hover:bg-blue-700">Logout</button>
+            </div>
+
+            <!-- Balance Section -->
+            <section id="balance" class="bg-white p-6 rounded-lg shadow-md mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Account Balance</h2>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Available Balance</span>
+                    <span class="text-3xl font-bold">$5,634.25</span>
+                </div>
+                <div class="flex justify-between mt-4">
+                    <span class="text-gray-600">Pending Transactions</span>
+                    <span class="text-xl font-bold text-yellow-500">-$200.00</span>
+                </div>
+            </section>
+
+            <!-- History Section -->
+            <section id="history" class="bg-white p-6 rounded-lg shadow-md mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Account History</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full table-auto">
+                        <thead class="bg-blue-800 text-white">
+                            <tr>
+                                <th class="px-4 py-2 text-left">Date</th>
+                                <th class="px-4 py-2 text-left">Description</th>
+                                <th class="px-4 py-2 text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="px-4 py-2">Feb 10, 2025</td>
+                                <td class="px-4 py-2">Payment to XYZ Corp</td>
+                                <td class="px-4 py-2 text-right text-red-500">-$150.00</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="px-4 py-2">Feb 9, 2025</td>
+                                <td class="px-4 py-2">Deposit from Employer</td>
+                                <td class="px-4 py-2 text-right text-green-500">+$2,000.00</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="px-4 py-2">Feb 8, 2025</td>
+                                <td class="px-4 py-2">ATM Withdrawal</td>
+                                <td class="px-4 py-2 text-right text-red-500">-$100.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Transactions Section -->
+            <section id="transactions" class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-semibold mb-4">Recent Transactions</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full table-auto">
+                        <thead class="bg-blue-800 text-white">
+                            <tr>
+                                <th class="px-4 py-2 text-left">Date</th>
+                                <th class="px-4 py-2 text-left">Transaction Type</th>
+                                <th class="px-4 py-2 text-right">Amount</th>
+                                <th class="px-4 py-2 text-left">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="px-4 py-2">Feb 10, 2025</td>
+                                <td class="px-4 py-2">Bill Payment</td>
+                                <td class="px-4 py-2 text-right text-red-500">-$50.00</td>
+                                <td class="px-4 py-2">Completed</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="px-4 py-2">Feb 8, 2025</td>
+                                <td class="px-4 py-2">Direct Deposit</td>
+                                <td class="px-4 py-2 text-right text-green-500">+$2,500.00</td>
+                                <td class="px-4 py-2">Completed</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="px-4 py-2">Feb 7, 2025</td>
+                                <td class="px-4 py-2">Transfer to Savings</td>
+                                <td class="px-4 py-2 text-right text-red-500">-$200.00</td>
+                                <td class="px-4 py-2">Completed</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</section> --}}
+
+<section>
+    {{#if data}}
+    <header class="dashboard-header">
+        <h1 class="logo">WELLS FARGO</h1>
+
+        <nav class="navbar" id="menu">
+            <a onclick="closeMenu()" class="menu-links" href="/dashboard">Home</a>
+            <a onclick="closeMenu()" class="menu-links" href="#transfer">Transfer</a>
+            <a onclick="closeMenu()" class="menu-links" href="#transaction">Transactions</a>
+            <a onclick="closeMenu()" class="menu-links" href="#history">History</a>
+        </nav>
+        
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+                &#9776; <!-- Hamburger Icon -->
+        </div>
+        {{!-- <h1>Account Dashboard</h1> --}}
+    </header>
+
+    <div class="container">
+        <div class="banner">
+            <h3 id="current-user">Hi, {{data.userName}}</h3>
+        </div>
+        {{!-- error message --}}
+        {{#if error}}
+        <p class="error-message">{{error}}</p>
+        {{/if}}
+        {{!-- success message --}}
+        {{#if message}}
+        <p class="success-message">{{message}}</p>
+        {{/if}}
+        <div class="dashboard-content">
+            <div class="sidebar">
+                <div class="card">
+                    <h4><strong>{{data.fullName}}</strong></h4>
+                    <p style="font-size:1.4rem;">Available Cash</p>
+                    <p class="balance">${{data.account.balance}}</p>
+                </div>
+                <div class="card">
+                    <h3>Recent Activity</h3>
+                    <ul>
+                        <li>Credit: $200.00 from VX Donald</li>
+                        <li>Declined: $800,000.00 To .....49523</li>  
+                    </ul>
+                </div>
+            </div>
+        
+            <div class="main-content" id="history">
+                <h2>Transaction History</h2>
+                <table class="transaction-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each transactions}}
+                        <tr>
+                            <td class="date">{{createdAt}}</td>
+                            <td>{{description}}</td>
+                            {{#if isDebit}}
+                                <td class="amount debit">${{amount}}</td>
+                                {{else}}
+                                <td class="amount credit">${{amount}}</td>
+                            {{/if}}
+                            
+                            <td>{{type}}</td>
+                        </tr>
+                        {{/each}}
+                        {{!-- <tr>
+                            <td>01/08/2025</td>
+                            <td>Deposit from share gains</td>
+                            <td class="amount credit">$205,000.00</td>
+                            <td>Credit</td>
+                        </tr> --}}
+                    </tbody>
+                </table>
+            </div>
+        
+            <div class="main-content" id="transfer">
+                <div class="transfer-section" style="width: 100%;">
+                    <h2 style="width: 100%;" style="color: red;">Transfer Money</h2>
+                    <div style="width: 100%;">
+                        <form style="width: 100%;" action="/transaction" method="post">
+                            {{!-- <label for="">From
+                                <input class="login-input transfer-input" type="text" name="from_account_no" id="">
+                            </label> --}}
+                            <label for="">To
+                                <input class="login-input transfer-input" type="text" name="to_account_no" id=""
+                                    placeholder="Account Number">
+                            </label>
+                            <label for="">Amount
+                                <input class="login-input transfer-input" type="text" name="amount" id="" placeholder="Amount">
+                            </label>
+                            <button type="submit" class="login-button">Proceed</button>
+                        </form>
+                    </div>
+                </div>
+        
+                <div id="transaction" style="width: 100%; padding-top:1rem;" class="scheduled-payment-section">
+                    <div style="width: 100%; border:1px solid rgb(93, 90, 90); height:35px; display:flex; align-items:center; margin-bottom:1.2rem;">
+                        <p style="width: 100%; text-align:center; font-size:small;">Schedued Transfers &amp; payment</p>
+                    </div>
+                    <div style="width: 100%;">
+                        {{#each data.transactions}}
+                        <div style="width: 100%;" class="transfer-details">
+                            {{#if isDebit}}
+                            <div style="display: flex; align-items:center; justify-content:space-between; width: 100%;">    
+                                    <p><strong style="color: blue;">Send</strong> <span class="date">{{createdAt}}</span> <span style="color: green;">&#x21bb;</span>
+                                </p>
+                                    <p style="font-size: 1.5rem;">${{amount}}</p>
+                               
+                                
+                            </div>
+                            <div style="width: 100%;">
+                                <p><strong>From</strong><span>.....22385</span> <span>--></span> <strong>To</strong>
+                                    <span>{{receiverAccountNo}}</span>
+                                </p>
+                            </div>
+                            <div style="display: flex; width:100%;">
+                                <p><small>{{status}}</small></p>
+                            </div>
+                             {{/if}}
+                        </div>
+                        {{/each}}
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        
+        <footer>
+            {{!-- <p>&copy; 1999 - 2025 Wells Fargo. All rights reserved. NMLSR ID 399801.</p> --}}
+            <p>© 1999 - 2025 Wells Fargo. All rights reserved. NMLSR ID 399801.</p>
+        </footer>
+        {{/if}}
+</section>

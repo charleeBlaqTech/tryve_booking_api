@@ -1,0 +1,39 @@
+<section>
+    <!-- Sign-Up Screen -->
+    <div class="signup-container">
+        <div class="signup-card">
+            <h2>Create Your Account</h2>
+
+            
+            {{!-- error message --}}
+            {{#if error}}
+                <p class="error-message">{{error}}</p>
+            {{/if}}
+            {{!-- success message --}}
+            {{#if message}}
+                <p class="success-message">{{message}}</p>
+            {{/if}}
+            
+            <!-- Sign-Up Form -->
+            <form action="/register/signup/" method="POST">
+                <input type="text" name="full_name" class="signup-input" placeholder="Full Name" required>
+                
+                <input type="text" name="user_name" class="signup-input" placeholder="Username" required>
+                
+                <input type="email" name="email" class="signup-input" placeholder="Email Address" required>
+
+                <input type="password" name="password" class="signup-input" placeholder="Password" required>
+
+                <input type="password" name="confirm_password" class="signup-input" placeholder="Confirm Password" required>
+
+                <!-- Submit Button -->
+                <button type="submit" class="signup-button">Sign Up</button>
+            </form>
+
+            <!-- Footer Section -->
+            <div class="signup-footer">
+                <p>Already have an account? <a href="/auth/login/">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</section>
