@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema({
   userName: {
     type: String,
     required: true,
+    unique: true,
     maxlength: 100,
   },
   email: {
@@ -24,20 +25,18 @@ const UserSchema = new mongoose.Schema({
     required: true,
     maxlength: 255,
   },
+  provider: {
+    type: String,
+    required: true,
+    enum: ['local', 'google', 'facebook'],
+  },
+  providerId: {
+    type: String
+  },
   role: {
     type: String,
     required: true,
     default: role?.DEFAULT,
-  },
-  account: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Account",
-    default: null,
-  },
-  transactions: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "Transaction",
-    default: null,
   },
   is_active: {
     type: Boolean,
@@ -56,6 +55,7 @@ const UserSchema = new mongoose.Schema({
     default: Date.now(),
   },
 });
+
 
 //TO HASH NEW USER PASSWORD BEFORE SAVING THEIR DETAILS
 UserSchema.pre("save", async function (next) {

@@ -10,6 +10,6 @@ const {
   comparePassword,
 } = require("../middlewares/validators/validators");
 
-router.route("/signup/").post(validateUserInputsForSignUp, comparePassword, registerController.signup).get(registerController.index);
+router.post("/signup/", validateUserInputsForSignUp, comparePassword, registerController.signup);
 
 module.exports = router;

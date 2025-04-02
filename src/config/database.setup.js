@@ -4,10 +4,7 @@ const db_connection = async ()=>{
     try {
         process.env.ENVIRONMENT === 'development' ?
 
-        await mongoose.connect(process.env.MONGO_URI, {
-            useNewUriParser : true,
-            useUnifiedTopology: true
-        })
+        await mongoose.connect(process.env.MONGO_URI)
         :
         await mongoose.connect(process.env.MONGO_URI_LOCAL, {
             useNewUriParser : true,

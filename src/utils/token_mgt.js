@@ -1,4 +1,3 @@
-const bcrypt            = require('bcrypt');
 const jwt               = require('jsonwebtoken');
 
 
@@ -7,12 +6,6 @@ function encode_token(userId, expiresIn = '5m'){
     if(!userId && !secret) return false
     const token     = jwt.sign({userId}, secret, { expiresIn: expiresIn });
     return token
-}
-function encode_token_for_referral_link(userId, expiresIn = '10y') {
-    const secret = process.env.SECRET_STRING;
-    if (!userId || !secret) return false;
-    const token = jwt.sign({ userId }, secret, { expiresIn: expiresIn });
-    return token;
 }
 
 function decode_token(token){
@@ -27,4 +20,4 @@ function decode_token(token){
     return userId
 }
 
-module.exports = {encode_token, encode_token_for_referral_link, decode_token}
+module.exports = {encode_token, decode_token}

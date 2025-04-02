@@ -3,12 +3,14 @@ const dotenv        = require('dotenv').config()
 const cors          = require('cors')
 const helmet        = require('helmet');
 const morgan        = require('morgan');
+const compression   = require('compression')
 const rateLimit     = require('express-rate-limit');
 const fileUpload    = require("express-fileupload");
 const cookieParser  = require("cookie-parser");
 const {engine} = require('express-handlebars')
 const path          = require("path");
 const connectDb     = require('./src/config/database.setup')
+const logger = require("./src/utils/logger");
 
 const app = express();
 
@@ -27,17 +29,13 @@ const corsOptions = {
   credentials: true,
 };
 
-// Request rate limiter per IP
-// const limiter = rateLimit({
-//     window: 15 * 60 * 1000,
-//     maxHeaderSize : 100
-// })
+
 
 // APP MIDDLEWARES==================
 // security middlewares
 app.use(helmet());
 app.use(morgan('dev'));
-// app.use()
+app.use(compression())
 app.use(cors(corsOptions));
 
 // requests middlewares
@@ -47,15 +45,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 app.use(express.static('public'));
 app.use("/statics", express.static(path.join(__dirname, "public")));
-
-
-
-//require each routes from the route folder
-const registerRoute = require("./src/routes/registerRoute");
-const loginRoute = require("./src/routes/loginRoute");
-const usersRoute = require("./src/routes/userRoute");
-const paymentRoute = require("./src/routes/paymentRoute");
-const dashboardRoute = require("./src/routes/dashboardRoute");
+app.use((req, res, next) => { logger.info(`${req.method} ${req.url} - ${req.ip}`); next(); });
 
 // TEMPLATE-ENGINE=HBS
 app.engine("hbs", engine({
@@ -63,27 +53,38 @@ app.engine("hbs", engine({
         allowProtoMethodsByDefault: true, allowProtoPropertiesByDefault:true
     }
 }))
+app.set('views', path.join(__dirname, 'src/views'));
 app.set("view engine", "hbs")
 
 
-//====== Application available endpoints========//
+//====== Application available endpoints========
 
-app.get("/", (req, res) => {
-  res.status(200).render('home');
-});
+//require each routes from the route folder
+const registerRoute = require("./src/routes/registerRoute");
+const authRoute = require("./src/routes/authRoute");
+const usersRoute = require("./src/routes/userRoute");
+const adminRoute = require("./src/routes/adminRoute");
+const eventRoute = require("./src/routes/eventRoute");
+const artistRoute = require("./src/routes/artistRoute");
+const dashboardRoute = require("./src/routes/dashboardRoute");
 
-app.use("/dashboard", dashboardRoute);
-app.use("/register", registerRoute);
-app.use("/auth", loginRoute);
-app.use("/users", usersRoute);
-app.use("/checkout", paymentRoute);
+// ENPOINTS PATHS=================================
+app.get("/", (req, res) => {res.status(200).render('home')});
+app.use("/api/v1/dashboard", dashboardRoute);
+app.use("/api/v1/register", registerRoute);
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/users", usersRoute);
+app.use("/api/v1/admin", adminRoute);
+app.use("/api/v1/event", eventRoute);
+app.use("/api/v1/artist", artistRoute);
 
 
 
-const port = process.env.PORT || 9090;
+
 
 //server listening function...
+const port = process.env.PORT || 9090;
 app.listen(port, async () => {
-  // await connectDb()
+  await connectDb()
   console.log(`listening on port ${port} on the local serverrr`);
 });

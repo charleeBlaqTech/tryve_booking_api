@@ -13,47 +13,33 @@ const { expressFileUploader } = require("../utils/fileUploads");
 const path = require("path");
 
 class UsersController {
-  
   static async create(req, res) {
-    if (!req?.user) {
-      res
-        .status(status?.HTTP_403_FORBIDDEN)
-        .json({ status: 403, message: "Unauthorized" });
-    }
     try {
-      if (!req?.body) {
+      if (!req.body) {
         res
           .status(status.HTTP_422_UNPROCESSABLE_ENTITY)
           .json({ status: 422, message: "unprocessible request body" });
       } else {
-        const foundUser = await check_if_user_exist_with_Email(
-          req?.body?.email
-        );
-        if (foundUser) {
-          res.status(status?.HTTP_409_CONFLICT).json({
-            status: 409,
-            message: "User With This Email already exist",
-          });
-        } else {
-          const tempPassword = generateTempPassword(12);
-          const newUser = await new User({
-            firstName: req.body.first_name,
-            lastName: req.body.last_name,
-            preferredName: req.body.preferred_name
-              ? req.body.preferred_name
-              : null,
-            email: req.body.email,
-            phoneNo: req.body.phone_number,
-            country: req.body.country,
-            gender: req.body.gender,
-            stateCity: req.body.state,
-            password: tempPassword,
-            role: role?.TUTOR,
-            is_active: true,
-          });
-
-          await newUser.save();
+        let fileName = null;
+        if (req) {
+          const file_name = expressFileUploader(req);
+          fileName = file_name;
         }
+        const blog = await Blog.create({
+          title: req?.body?.title,
+          subtitle: req?.body?.subtitle,
+          content: req?.body?.content,
+          imageUrl: fileName,
+          category: req?.body?.category,
+          author: req?.user,
+        });
+        res
+          .status(status.HTTP_201_CREATED)
+          .json({
+            status: 201,
+            data: blog,
+            message: "Blog created successfully.",
+          });
       }
     } catch (error) {
       res
@@ -62,41 +48,109 @@ class UsersController {
     }
   }
 
-
-  static async update_account_password(req, res) {
+  static async update(req, res) {
     try {
-      if (
-        !req?.body
-      ) {
+      const { id } = req.params;
+
+      if (!id) {
+        res
+          .status(status.HTTP_400_BAD_REQUEST)
+          .json({ message: "Provide blog id" });
+      }
+      if (!req.body) {
         res
           .status(status.HTTP_422_UNPROCESSABLE_ENTITY)
           .json({ status: 422, message: "unprocessible request body" });
+      }
+      const blog = await Blog.findById({ _id: id });
+      if (!blog) {
+        return res
+          .status(status.HTTP_404_NOT_FOUND)
+          .json({ status: 404, message: `Blog with ID: ${id} not found.` });
+      }
+      let fileName = null;
+      if (req) {
+        const file_name = expressFileUploader(req);
+        fileName = file_name;
+      }
+      blog.title = req.body.title;
+      blog.subtitle = req.body.subtitle;
+      blog.content = req.body.content;
+      blog.imageUrl = fileName;
+      blog.category = req.body.category;
+      blog.author = req?.user;
+
+      await blog.save();
+
+      res
+        .status(200)
+        .json({
+          status: 200,
+          message: "Blog updated successfully",
+          data: blog,
+        });
+    } catch (error) {
+      res
+        .status(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        .json({ status: 500, message: error.message });
+    }
+  }
+
+  static async makeBlogPostFeatured(req, res) {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        res
+          .status(status.HTTP_400_BAD_REQUEST)
+          .json({ message: "Provide blog id to make featured blog" });
+      }
+      if (!req.body) {
+        res
+          .status(status.HTTP_422_UNPROCESSABLE_ENTITY)
+          .json({ status: 422, message: "unprocessible request body" });
+      }
+      const blog = await Blog.findById({ _id: id });
+      if (!blog) {
+        return res
+          .status(status.HTTP_404_NOT_FOUND)
+          .json({ status: 404, message: `Blog with ID: ${id} not found.` });
+      }
+      blog.isFeatured = true;
+
+      await blog.save();
+      res
+        .status(200)
+        .json({
+          status: 200,
+          message: "Blog featured successfully",
+          data: blog,
+        });
+    } catch (error) {
+      res
+        .status(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        .json({ status: 500, message: error.message });
+    }
+  }
+
+  static async delete(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        res
+          .status(status.HTTP_400_BAD_REQUEST)
+          .json({ message: "Provide blog id to delete blog" });
+      }
+      const blog = await Blog.findById({ _id: id });
+      if (!blog) {
+        res
+          .status(status.HTTP_404_NOT_FOUND)
+          .json({ status: 404, message: `Blog with ID: ${id} not found.` });
       } else {
-        const foundUser = await User.findOne({userName: req.body.username})
-        if (!foundUser) {
-          res
-            .status(status?.HTTP_404_NOT_FOUND)
-            .json({ status: 404, message: "User not found" });
-        } else {
-
-          const temporalPasswordCorrect = bcrypt.compareSync(
-            req?.body?.old_password,
-            foundUser.password
-          );
-
-          if (!temporalPasswordCorrect) {
-            res.status(status?.HTTP_400_BAD_REQUEST).json({
-              status: 400,
-              message: "Temporal Password entered not correct",
-            });
-          } else {
-            foundUser.password = req?.body?.new_password;
-            await foundUser.save();
-            res
-              .status(status?.HTTP_200_OK)
-              .json({ status: 200, message: "Password reset successfully" });
-          }
-        }
+        const blog = await Blog.findByIdAndDelete({ _id: id });
+        res
+          .status(status.HTTP_200_OK)
+          .json({ status: 200, message: "Blog deleted successfully" });
       }
     } catch (error) {
       res
@@ -105,7 +159,54 @@ class UsersController {
     }
   }
 
-  
+  static async show(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        res
+          .status(status.HTTP_400_BAD_REQUEST)
+          .json({ message: "Provide blog id to fetch blog details" });
+      }
+      const blog = await Blog.findById({ _id: id });
+      if (!blog) {
+        res
+          .status(status.HTTP_404_NOT_FOUND)
+          .json({ status: 404, message: `Blog with ID: ${id} not found.` });
+      }
+      res
+        .status(status.HTTP_200_OK)
+        .json({ status: 200, data: blog, message: "single blog fetched" });
+    } catch (error) {
+      res
+        .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+        .json({ status: 500, message: error?.message });
+    }
+  }
+
+  static async index(req, res) {
+    try {
+      const blogs = await Blog.find({});
+      if (!blogs) {
+        res
+          .status(status?.HTTP_404_NOT_FOUND)
+          .json({ status: 404, message: "Cannot fetch blogs" });
+      }
+      res.status(status?.HTTP_200_OK).json({ status: 200, data: blogs });
+    } catch (error) {
+      res
+        .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+        .json({ status: 500, message: error?.message });
+    }
+  }
+
+  static async destroy() {
+    try {
+    } catch (error) {
+      res
+        .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+        .json({ status: 500, message: error?.message });
+    }
+  }
 }
 
 module.exports = UsersController;

@@ -4,6 +4,6 @@ const dashboardController = require("../controllers/DashboardController");
 const authMiddleWare = require("../middlewares/auth.and.permissions/checkUserWare");
 
 
-router.route("/").get(authMiddleWare, dashboardController.index);
+router.route("/").get(authMiddleWare);
 
 module.exports = router;

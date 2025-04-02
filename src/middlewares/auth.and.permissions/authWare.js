@@ -21,7 +21,7 @@ const authenticateUser = async (req, res, next)=>{
                 return res.status(status?.HTTP_403_FORBIDDEN).json({status:403, message: 'Invalid token' });
                 }
     
-               const foundUser = await check_if_user_exist_with_id(payload?.userId);
+               const foundUser = await check_if_user_exist_with_id(payload?.foundUser?._id);
                if (!foundUser) {
                    res?.status(status?.HTTP_404_NOT_FOUND).json({
                        status: 404,
@@ -29,7 +29,7 @@ const authenticateUser = async (req, res, next)=>{
                    })
                }
 
-               req.user = payload.userId;
+               req.user = foundUser;
                next();
           });
     

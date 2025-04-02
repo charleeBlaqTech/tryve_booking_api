@@ -1,30 +1,15 @@
 const status = require("../../utils/status.constants");
-const {
-  check_if_user_exist_with_Email,
-  check_if_user_exist_with_id,
-} = require("../../utils/userExist");
+const {check_if_user_exist_with_Email,} = require("../../utils/userExist");
 const User = require("../../models/userModel");
 const { role } = require("../../utils/user.roles.constant");
-const { generateOtp } = require("../../utils/generate_otp");
 const path = require("path");
 
 class RegisterUser {
 
-  static async index(req, res) {
-    try {
-      res.render('register')
-    } catch (error) {
-      res
-        .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
-        .json({ status: 500, message: error?.message });
-    }
-  }
-
   static async signup(req, res) {
     try {
       if (!req.body) {
-        res
-          .status(status.HTTP_422_UNPROCESSABLE_ENTITY).render('register', {error: `unprocessible request body`})
+        res.status(status.HTTP_422_UNPROCESSABLE_ENTITY).json({error: `unprocessible request body`})
       } else {
         const foundUser = await check_if_user_exist_with_Email(
           req?.body?.email
@@ -40,13 +25,14 @@ class RegisterUser {
             email: req.body.email,
             password: req.body.password,
             is_active: true,
+            provider: 'local',
             role: role?.GUEST,
           });
 
           if (newUser) {
             await newUser.save();
-            res.status(status?.HTTP_201_CREATED).render("login", {
-                message: `${newUser?.fullName} your wellsFago Ibanking account was created successfully`,
+            res.status(status?.HTTP_201_CREATED).json({
+                message: `${newUser?.fullName} your account was created successfully`,
               });
           }
         }
