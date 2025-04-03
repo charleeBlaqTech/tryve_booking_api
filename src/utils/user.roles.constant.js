@@ -1,6 +1,6 @@
 const role = {
     ADMIN : "admin",
-    DEFAULT : "customer",
+    DEFAULT : "user",
 }
 
 module.exports = {role}

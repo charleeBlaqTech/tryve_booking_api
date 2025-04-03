@@ -11,7 +11,9 @@ class BookingController {
       const bookings = await Booking.find().populate("user", "name email").populate("event");
       res.status(200).json(bookings);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching bookings", error });
+      res
+      .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+      .json({ status: 500, message: error?.message });
     }
   }
 
@@ -19,8 +21,8 @@ class BookingController {
     try {
       const { eventId, tickets } = req.body;
       const event = await Event.findById(eventId);
-      if (!event) return res.status(404).json({ message: "Event not found" });
-      if (tickets > event.ticketsAvailable) return res.status(400).json({ message: "Not enough tickets available" });
+      if (!event) return res.status(status.HTTP_404_NOT_FOUND).json({ message: "Event not found" });
+      if (tickets > event.ticketsAvailable) return res.status(status.HTTP_400_BAD_REQUEST).json({ message: "Not enough tickets available" });
 
       const totalAmount = tickets * event.ticketPrice;
       const reference = `BOOK_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`; 
@@ -51,7 +53,7 @@ class BookingController {
         }
       );
 
-      res.status(201).json({ message: "Payment initiated", paystackUrl: paystackResponse.data.data.authorization_url });
+      res.status(status.HTTP_201_CREATED).json({ message: "Payment initiated", paystackUrl: paystackResponse.data.data.authorization_url });
     } catch (error) {
       res.status(500).json({ message: "Error initiating payment", error: error.response?.data || error.message });
     }
@@ -76,17 +78,17 @@ class BookingController {
           { new: true }
         );
 
-        if (!booking) return res.status(404).json({ message: "Booking not found" });
+        if (!booking) return res.status(status.HTTP_404_NOT_FOUND).json({ message: "Booking not found" });
 
         // Reduce available tickets
         await Event.findByIdAndUpdate(booking.event, {
           $inc: { ticketsAvailable: -booking.tickets },
         });
 
-        return res.status(200).json({ message: "Payment verified successfully", booking });
+        return res.status(status.HTTP_200_OK).json({ message: "Payment verified successfully", booking });
       }
 
-      return res.status(400).json({ message: "Payment failed" });
+      return res.status(status.HTTP_400_BAD_REQUEST).json({ message: "Payment failed" });
     } catch (error) {
       res.status(500).json({ message: "Error verifying payment", error: error.response?.data || error.message });
     }
@@ -95,9 +97,11 @@ class BookingController {
   static async getUserBookings(req, res) {
     try {
       const bookings = await Booking.find({ user: req.user.id }).populate("event");
-      res.status(200).json(bookings);
+      res.status(status.HTTP_200_OK).json(bookings);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching bookings", error });
+      res
+      .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+      .json({ status: 500, message: error?.message });
     }
   }
 }

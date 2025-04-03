@@ -18,9 +18,11 @@ class ArtistController {
         createdBy: req.user.id,
       });
       await artist.save();
-      res.status(201).json(artist);
+      res.status(status.HTTP_201_CREATED).json(artist);
     } catch (error) {
-      res.status(500).json({ message: "Error creating artist", error });
+      res
+      .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+      .json({ status: 500, message: error?.message });
     }
   }
 
@@ -28,9 +30,11 @@ class ArtistController {
   static async getArtists(req, res) {
     try {
       const artists = await Artist.find().populate("createdBy", "name email");
-      res.status(200).json(artists);
+      res.status(status.HTTP_200_OK).json(artists);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching artists", error });
+      res
+      .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+      .json({ status: 500, message: error?.message });
     }
   }
 
@@ -38,10 +42,12 @@ class ArtistController {
   static async getArtistById(req, res) {
     try {
       const artist = await Artist.findById(req.params.id);
-      if (!artist) return res.status(404).json({ message: "Artist not found" });
-      res.status(200).json(artist);
+      if (!artist) return res.status(status.HTTP_404_NOT_FOUND).json({ message: "Artist not found" });
+      res.status(status.HTTP_200_OK).json(artist);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching artist", error });
+      res
+      .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+      .json({ status: 500, message: error?.message });
     }
   }
 
@@ -49,15 +55,17 @@ class ArtistController {
   static async updateArtist(req, res) {
     try {
       const artist = await Artist.findById(req.params.id);
-      if (!artist) return res.status(404).json({ message: "Artist not found" });
-      if (artist.createdBy.toString() !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
+      if (!artist) return res.status(status.HTTP_404_NOT_FOUND).json({ message: "Artist not found" });
+      if (artist.createdBy.toString() !== req.user.id) return res.status(status.HTTP_403_FORBIDDEN).json({ message: "Unauthorized" });
 
       // Update artist with new data
       Object.assign(artist, req.body);
       await artist.save();
-      res.status(200).json(artist);
+      res.status(status.HTTP_200_OK).json(artist);
     } catch (error) {
-      res.status(500).json({ message: "Error updating artist", error });
+      res
+      .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+      .json({ status: 500, message: error?.message });
     }
   }
 
@@ -65,13 +73,15 @@ class ArtistController {
   static async deleteArtist(req, res) {
     try {
       const artist = await Artist.findById(req.params.id);
-      if (!artist) return res.status(404).json({ message: "Artist not found" });
-      if (artist.createdBy.toString() !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
+      if (!artist) return res.status(status.HTTP_404_NOT_FOUND).json({ message: "Artist not found" });
+      if (artist.createdBy.toString() !== req.user.id) return res.status(status.HTTP_403_FORBIDDEN).json({ message: "Unauthorized" });
 
       await artist.remove();
-      res.status(200).json({ message: "Artist deleted successfully" });
+      res.status(status.HTTP_200_OK).json({ message: "Artist deleted successfully" });
     } catch (error) {
-      res.status(500).json({ message: "Error deleting artist", error });
+      res
+      .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+      .json({ status: 500, message: error?.message });
     }
   }
 }

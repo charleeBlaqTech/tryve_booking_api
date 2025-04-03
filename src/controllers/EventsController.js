@@ -1,4 +1,5 @@
 const Event = require("../models/eventModel");
+const status = require("../utils/status.constants");
 
 class EventController {
 
@@ -17,9 +18,11 @@ class EventController {
         createdBy: req.user._id,
       });
       await event.save();
-      res.status(201).json(event);
+      res.status(status.HTTP_201_CREATED).json(event);
     } catch (error) {
-      res.status(500).json({ message: "Error creating event", error });
+      res
+      .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+      .json({ status: 500, message: error?.message });
     }
   }
 
@@ -27,9 +30,11 @@ class EventController {
   static async getEvents(req, res) {
     try {
       const events = await Event.find({}).lean().populate("artist", "name genre");
-      res.status(200).json(events);
+      res.status(status.HTTP_200_OK).json(events);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching events", error });
+      res
+      .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+      .json({ status: 500, message: error?.message });
     }
   }
 
@@ -37,10 +42,12 @@ class EventController {
   static async getEventById(req, res) {
     try {
       const event = await Event.findById(req.params.id).populate("artist");
-      if (!event) return res.status(404).json({ message: "Event not found" });
-      res.status(200).json(event);
+      if (!event) return res.status(status.HTTP_404_NOT_FOUND).json({ message: "Event not found" });
+      res.status(status.HTTP_200_OK).json(event);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching event", error });
+      res
+      .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+      .json({ status: 500, message: error?.message });
     }
   }
 
@@ -48,15 +55,17 @@ class EventController {
   static async updateEvent(req, res) {
     try {
       const event = await Event.findById(req.params.id);
-      if (!event) return res.status(404).json({ message: "Event not found" });
-      if (event.createdBy.toString() !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
+      if (!event) return res.status(status.HTTP_404_NOT_FOUND).json({ message: "Event not found" });
+      if (event.createdBy.toString() !== req.user.id) return res.status(status.HTTP_403_FORBIDDEN).json({ message: "Unauthorized" });
 
       // Update event with new data
       Object.assign(event, req.body);
       await event.save();
-      res.status(200).json(event);
+      res.status(status.HTTP_200_OK).json(event);
     } catch (error) {
-      res.status(500).json({ message: "Error updating event", error });
+      res
+      .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+      .json({ status: 500, message: error?.message });
     }
   }
 
@@ -64,13 +73,15 @@ class EventController {
   static async deleteEvent(req, res) {
     try {
       const event = await Event.findById(req.params.id);
-      if (!event) return res.status(404).json({ message: "Event not found" });
+      if (!event) return res.status(status.HTTP_404_NOT_FOUND).json({ message: "Event not found" });
       if (event.createdBy.toString() !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
 
       await event.remove();
-      res.status(200).json({ message: "Event deleted successfully" });
+      res.status(status.HTTP_200_OK).json({ message: "Event deleted successfully" });
     } catch (error) {
-      res.status(500).json({ message: "Error deleting event", error });
+      res
+      .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+      .json({ status: 500, message: error?.message });
     }
   }
 

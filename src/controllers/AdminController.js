@@ -8,7 +8,9 @@ class AdminController{
             const users = await User.find().select("-password"); 
             res.status(200).json({data:users}); 
         } catch (error) { 
-            res.status(500).json({ message: "Error fetching users", error }); 
+            res
+              .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+              .json({ status: 500, message: error?.message });
         } 
     }; 
     
@@ -24,7 +26,9 @@ class AdminController{
             
             res.status(200).json({ message: "User role updated", data: user }); 
         } catch (error) { 
-            res.status(500).json({ message: "Error updating user role", error }); 
+            res
+            .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+            .json({ status: 500, message: error?.message });
         } 
     };
     
@@ -35,7 +39,9 @@ class AdminController{
              
             res.status(200).json({ message: "User deleted successfully" }); 
         } catch (error) { 
-            res.status(500).json({ message: "Error deleting user", error }); 
+            res
+              .status(status?.HTTP_500_INTERNAL_SERVER_ERROR)
+              .json({ status: 500, message: error?.message });
         } 
     };
 }

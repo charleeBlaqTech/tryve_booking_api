@@ -65,7 +65,7 @@ function validateUserInputsForSignIn(req, res, next) {
 
   //sanitizing the req.body form datas to validate
   const sanitizedData = {
-    email: req.body.user_name ? req.body.user_name.trim() : '',
+    user_name: req.body.user_name ? req.body.user_name.trim() : '',
     password: req.body.password ? req.body.password.trim() : '',
 
   };

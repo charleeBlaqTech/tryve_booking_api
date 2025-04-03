@@ -26,7 +26,7 @@ class RegisterUser {
             password: req.body.password,
             is_active: true,
             provider: 'local',
-            role: role?.GUEST,
+            role: role?.DEFAULT,
           });
 
           if (newUser) {
